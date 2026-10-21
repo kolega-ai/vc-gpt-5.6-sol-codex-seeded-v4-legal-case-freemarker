@@ -1,0 +1,5 @@
+server: { port: 8082 }
+app:
+  signing-key: ${SESSION_SIGNING_KEY:development-signing-key-change-before-production-32}
+  credential: ${CORE_CREDENTIAL:local-core-credential}
+

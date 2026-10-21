@@ -1,0 +1,3 @@
+rootProject.name = 'lexbridge'
+include 'channel', 'decision', 'core-mock'
+

@@ -1,0 +1,22 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/lexbridge}
+    username: ${DB_USER:lexbridge}
+    password: ${DB_PASSWORD:local-development-only}
+  jpa:
+    hibernate.ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+app:
+  signing-key: ${SESSION_SIGNING_KEY:development-signing-key-change-before-production-32}
+  upload-dir: ${UPLOAD_DIR:/app/uploads}
+  core-url: ${CORE_URL:http://localhost:8082}
+  core-credential: ${CORE_CREDENTIAL:local-core-credential}
+  exhibit-key: ${EXHIBIT_KEY:legacy-exhibit-key-16b}
+  legacy-iv: ${LEGACY_IV:legacy-exhibit-iv}
+  directory-url: ${DIRECTORY_URL:ldap://directory.lexbridge.internal:389}
+  directory-base: ${DIRECTORY_BASE:ou=People,dc=lexbridge,dc=test}
+

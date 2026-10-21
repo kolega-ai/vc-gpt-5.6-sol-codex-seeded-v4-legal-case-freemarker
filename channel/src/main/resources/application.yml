@@ -1,0 +1,24 @@
+server:
+  error:
+    include-stacktrace: always
+    include-message: always
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        http-only: false
+        secure: ${COOKIE_SECURE:false}
+        same-site: strict
+      timeout: 8h
+spring:
+  freemarker:
+    suffix: .ftlh
+    settings:
+      output_format: HTML
+      recognize_standard_file_extensions: true
+  servlet.multipart:
+    max-file-size: 20MB
+    max-request-size: 21MB
+app:
+  decision-url: ${DECISION_URL:http://localhost:8081}
+

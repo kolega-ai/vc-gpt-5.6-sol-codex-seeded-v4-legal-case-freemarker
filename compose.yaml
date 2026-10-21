@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: lexbridge
+      POSTGRES_USER: lexbridge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-development-only}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lexbridge"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+  decision:
+    build:
+      context: .
+      args: { MODULE: decision }
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/lexbridge
+      DB_USER: lexbridge
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-local-development-only}
+      SESSION_SIGNING_KEY: ${SESSION_SIGNING_KEY:-development-signing-key-change-before-production-32}
+      CORE_URL: http://core-mock:8082
+      CORE_CREDENTIAL: ${CORE_CREDENTIAL:-local-core-credential}
+    depends_on:
+      postgres: { condition: service_healthy }
+      core-mock: { condition: service_started }
+    volumes: ["uploads:/app/uploads"]
+  core-mock:
+    build:
+      context: .
+      args: { MODULE: core-mock }
+    environment:
+      SESSION_SIGNING_KEY: ${SESSION_SIGNING_KEY:-development-signing-key-change-before-production-32}
+      CORE_CREDENTIAL: ${CORE_CREDENTIAL:-local-core-credential}
+  channel:
+    build:
+      context: .
+      args: { MODULE: channel }
+    environment:
+      DECISION_URL: http://decision:8081
+      SESSION_SIGNING_KEY: ${SESSION_SIGNING_KEY:-development-signing-key-change-before-production-32}
+      COOKIE_SECURE: "false"
+    ports: ["8080:8080"]
+    volumes: ["uploads:/app/uploads"]
+    depends_on: [decision]
+volumes:
+  postgres-data:
+  uploads:
